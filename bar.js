@@ -11,6 +11,9 @@ function BarChart(targetId, width, height, data) {
 	//pre operations
 	chart.performPreOperations();
 
+	//draw chart
+	chart.drawChart();
+
 	console.log(chart);
 }
 
@@ -42,11 +45,11 @@ BarChart.prototype.setCanvasParameters = function(
 BarChart.prototype.setChartParameters = function() {
 	var chart = this;
 	//axis configurations
-	chart.axeRatio = 10; // in terms of percentage
-	chart.verticalMargin = (chart.height * chart.axeRatio) / 100;
-	chart.horizontalMargin = (chart.width * chart.axeRatio) / 100;
-	chart.axeColor = "black";
-	chart.axeWidth = 0.75;
+	chart.axisRatio = 10; // in terms of percentage
+	chart.verticalMargin = (chart.height * chart.axisRatio) / 100;
+	chart.horizontalMargin = (chart.width * chart.axisRatio) / 100;
+	chart.axisColor = "black";
+	chart.axisWidth = 0.75;
 
 	//label configurations
 	chart.fontRatio = 3; // in terms of percentage
@@ -82,7 +85,7 @@ BarChart.prototype.createCanvas = function() {
 	var canvas = document.createElement("canvas");
 	canvas.id = chart.id + "-" + Math.random();
 	canvas.width = chart.width;
-	canvas.height = chart.ehgith;
+	canvas.height = chart.height;
 
 	// append canvas to target container
 	document.getElementById(chart.id).innerHTML = ""; // sets a clean container
@@ -116,12 +119,35 @@ BarChart.prototype.prepareData = function() {
 	chart.maxValue = Math.max.apply(null, chart.values);
 	chart.minValue = Math.min.apply(null, chart.values);
 
-	// axe specs
-	chart.verticalAxeWidth - chart.height - 2 * chart.verticalMargin; // bottom and top margins
-	chart.horizontalAxeWidth - chart.width - 2 * chart.horizontalMargin; // left and right
+	// Axis specs
+	chart.verticalAxisWidth - chart.height - 2 * chart.verticalMargin; // bottom and top margins
+	chart.horizontalAxisWidth - chart.width - 2 * chart.horizontalMargin; // left and right
 
 	//label specs
 	chart.verticalUpperBound = Math.ceil(chart.max / 10) * 10;
 	chart.verticalLabelFreq = chart.verticalUpperBound / chart.itemsNum;
-	chart.horizontalLabelFreq = chart.horizontalAxeWidth / chart.itemsNum;
+	chart.horizontalLabelFreq = chart.horizontalAxisWidth / chart.itemsNum;
+};
+
+BarChart.prototype.drawChart = function() {
+	// base
+	var chart = this;
+
+	//vertical axis
+	chart.drawVerticalAxis();
+};
+
+BarChart.prototype.drawVerticalAxis = function() {
+	var chart = this;
+
+	// vertical axis
+	chart.context.beginPath();
+	chart.context.strokeStyle = chart.axisColor;
+	chart.context.lineWidth = chart.axisWidth;
+	chart.context.moveTo(chart.horizontalMargin, chart.verticalMargin);
+	chart.context.lineTo(
+		chart.horizontalMargin,
+		chart.height - chart.verticalMargin
+	);
+	chart.context.stroke();
 };
